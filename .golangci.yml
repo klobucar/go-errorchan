@@ -1,0 +1,86 @@
+# golangci-lint v2 configuration. Philosophy: lint everything, then justify
+# every linter that is deliberately left off below.
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  # Start from nothing and opt in explicitly so the enabled set is auditable.
+  default: none
+  enable:
+    - errcheck      # unchecked errors are bugs waiting to happen
+    - govet         # the standard vet suite
+    - staticcheck   # the staticcheck/gosimple/stylecheck megalinter
+    - ineffassign   # ineffectual assignments
+    - unused        # dead code
+    - revive        # broad style/lint rules (golint successor)
+    - gocritic      # opinionated correctness/style/performance diagnostics
+    - unconvert     # redundant type conversions
+    - misspell      # commonly misspelled English words in comments/strings
+    - bodyclose     # response bodies that are never closed
+    - errorlint     # correct error wrapping/comparison (errors.Is/As, %w)
+    - copyloopvar   # loop-variable capture footguns
+    - gocyclo       # flag overly complex functions
+    - goconst       # repeated strings that should be constants
+    - nakedret      # naked returns in longer functions
+    - nolintlint    # keep //nolint directives honest
+    - predeclared   # shadowing predeclared identifiers
+    - revive
+    - unparam       # unused function parameters/results
+    - usestdlibvars # prefer stdlib constants over magic strings
+    - wastedassign  # assignments whose value is never used
+
+  settings:
+    govet:
+      enable-all: true
+    gocyclo:
+      min-complexity: 15
+    misspell:
+      locale: US
+    revive:
+      rules:
+        - name: exported
+          arguments:
+            - disableStutteringCheck
+        - name: package-comments
+        - name: error-return
+        - name: error-naming
+        - name: if-return
+        - name: var-declaration
+        - name: blank-imports
+        - name: context-as-argument
+        - name: indent-error-flow
+
+  exclusions:
+    generated: lax
+    rules:
+      # Test files exercise panics, recovers, and odd inputs on purpose; relax
+      # the noisiest checks there without disabling them for library code.
+      - path: _test\.go
+        linters:
+          - gocyclo
+          - goconst
+          - errcheck
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/klobucar/go-errorchan
+
+# Linters deliberately NOT enabled, with justification:
+#   depguard      - no third-party deps to guard against (stdlib-only module).
+#   gochecknoglobals / gochecknoinits - the package intentionally uses a global
+#                   default mode (atomic) and an init to seed it; that is the
+#                   documented design.
+#   exhaustruct   - StyledError is partially constructed by design; requiring
+#                   every field at every literal would be noise.
+#   wsl / nlreturn - whitespace-placement linters; too opinionated for value.
+#   lll           - long kaomoji/persona string literals would trip line length.
+#   testpackage   - white-box tests need access to unexported transform layers.
+#   varnamelen    - short names (r, b, c) are idiomatic in this small package.
+#   funlen        - gocyclo already bounds complexity; line counts add little.

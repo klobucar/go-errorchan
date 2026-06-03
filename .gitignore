@@ -1,0 +1,25 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binaries and output
+*.test
+*.out
+coverage.out
+coverage.html
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Dependency directory (vendoring is not used here)
+/vendor/
+
+# Editor / OS noise
+.DS_Store
+*.swp
+.idea/
+.vscode/
