@@ -184,3 +184,36 @@ func TestPersonaForFallback(t *testing.T) {
 		t.Errorf("personaFor unknown did not fall back to dere")
 	}
 }
+
+func TestWrapWithoutType(t *testing.T) {
+	orig := errors.New("connection refused")
+	styled := Wrap(orig, WithSeed(42), WithoutType())
+
+	// The Go type must not leak into the framing or the rendered string.
+	if strings.Contains(styled.Framing(), "*") {
+		t.Errorf("framing still contains a type token: %q", styled.Framing())
+	}
+	if strings.Contains(styled.Error(), "errorString") {
+		t.Errorf("rendered error leaks the Go type: %q", styled.Error())
+	}
+	// The original message is still preserved verbatim, after the separator.
+	if styled.OriginalMessage != "connection refused" {
+		t.Errorf("OriginalMessage = %q, want verbatim", styled.OriginalMessage)
+	}
+	if !strings.HasSuffix(styled.Error(), separator+"connection refused") {
+		t.Errorf("rendered error missing verbatim tail: %q", styled.Error())
+	}
+	// errors.Is still sees through the persona.
+	if !errors.Is(styled, orig) {
+		t.Error("errors.Is should see through WithoutType styling")
+	}
+}
+
+func TestWithoutTypeAllModes(t *testing.T) {
+	for _, mode := range []string{ModeDere, ModeTsun, ModeYan} {
+		styled := Wrap(io.EOF, WithMode(mode), WithoutType(), WithSeed(7))
+		if strings.Contains(styled.Framing(), "*") {
+			t.Errorf("mode %s: type token leaked: %q", mode, styled.Framing())
+		}
+	}
+}

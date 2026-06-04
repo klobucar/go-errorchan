@@ -37,6 +37,17 @@
 // inside a deferred call, and [NewSlogHandler] to style error-valued slog
 // attributes.
 //
+// # Hiding the Go type
+//
+// By default the framing names the wrapped error's Go type (for example
+// *errors.errorString*) to aid debugging. Pass [WithoutType] to replace that
+// slot with a neutral noun, run through the same phonetic transform as the rest
+// of the framing, for cases where the framing is shown to end users:
+//
+//	styled := errorchan.Wrap(err, errorchan.WithoutType())
+//	styled.OriginalMessage           // still the verbatim message
+//	errors.Is(styled, io.EOF)        // still works
+//
 // # Determinism
 //
 // All randomness (intro choice, kaomoji choice, stutter placement) flows

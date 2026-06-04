@@ -1,0 +1,18 @@
+version: 2
+updates:
+  # Keep GitHub Actions pinned-by-SHA references current.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "ci"
+
+  # Go modules (no third-party runtime deps today, but covers future additions
+  # and toolchain bumps).
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "deps"

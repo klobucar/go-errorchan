@@ -5,6 +5,11 @@ import (
 	"strings"
 )
 
+// hiddenTypeNoun replaces the Go type slot in the framing when [WithoutType] is
+// set. It is a plain English noun so the phonetic transform can mangle it to fit
+// the active persona.
+const hiddenTypeNoun = "error"
+
 // separator divides the persona framing from the original error message in
 // [StyledError.Error]. It is a single inline glyph so styled errors stay on one
 // line and remain greppable in logs.
@@ -65,7 +70,15 @@ func (c config) style(err error) *StyledError {
 	intro := p.intros[c.rng.IntN(len(p.intros))]
 	kaomoji := p.kaomoji[c.rng.IntN(len(p.kaomoji))]
 
-	framing := styleText(c.rng, intro, p.heavy, typeName(err))
+	var framing string
+	if c.hideType {
+		// Suppress the Go type: swap the type verb for a neutral noun and run the
+		// whole intro through the transform, so the noun is uwuified like the rest
+		// (for example "error" becomes "ewwow" in heavy modes).
+		framing = uwuifyWith(c.rng, strings.ReplaceAll(intro, "%s", hiddenTypeNoun), p.heavy)
+	} else {
+		framing = styleText(c.rng, intro, p.heavy, typeName(err))
+	}
 	framing = strings.TrimSpace(framing) + " " + kaomoji
 
 	return &StyledError{

@@ -9,8 +9,9 @@ type Option func(*config)
 
 // config is the resolved configuration for a single styling operation.
 type config struct {
-	rng  *rand.Rand
-	mode string
+	rng      *rand.Rand
+	mode     string
+	hideType bool
 }
 
 // WithMode selects the personality mode for this operation, overriding the
@@ -18,6 +19,18 @@ type config struct {
 func WithMode(mode string) Option {
 	return func(c *config) {
 		c.mode = mode
+	}
+}
+
+// WithoutType suppresses the error's Go type in the persona framing. Normally
+// the framing names the wrapped type (for example *errors.errorString*) to aid
+// debugging; with this option the type slot is replaced by a neutral noun that
+// is run through the same phonetic transform as the rest of the framing. The
+// wrapped error and its verbatim message are unaffected. Useful when the framing
+// is shown to end users who should not see Go internals.
+func WithoutType() Option {
+	return func(c *config) {
+		c.hideType = true
 	}
 }
 

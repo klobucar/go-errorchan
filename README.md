@@ -80,6 +80,7 @@ log := slog.New(h)
 Configuration uses the functional-options pattern:
 
 - `WithMode(string)` — override the mode for this operation.
+- `WithoutType()` — suppress the wrapped error's Go type in the framing (the type slot becomes a neutral, uwuified noun). Useful when the framing is shown to end users who shouldn't see Go internals; the wrapped error and its verbatim message are unaffected.
 - `WithSeed(int64)` — deterministic output from a fresh, per-operation source (safe to reuse across goroutines).
 - `WithRand(*rand.Rand)` — deterministic output from a source you own (not safe to share across goroutines).
 
