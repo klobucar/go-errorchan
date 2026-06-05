@@ -5,6 +5,9 @@
 [![CI](https://github.com/klobucar/go-errorchan/actions/workflows/ci.yml/badge.svg)](https://github.com/klobucar/go-errorchan/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/klobucar/go-errorchan.svg)](https://pkg.go.dev/github.com/klobucar/go-errorchan)
 [![Go Report Card](https://goreportcard.com/badge/github.com/klobucar/go-errorchan)](https://goreportcard.com/report/github.com/klobucar/go-errorchan)
+[![Latest release](https://img.shields.io/github/v/tag/klobucar/go-errorchan?label=release&sort=semver)](https://github.com/klobucar/go-errorchan/releases/latest)
+[![Go version](https://img.shields.io/github/go-mod/go-version/klobucar/go-errorchan)](go.mod)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ```go
 import "github.com/klobucar/go-errorchan"
